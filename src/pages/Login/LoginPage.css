@@ -1,0 +1,14 @@
+.wrap-form{
+  background-color: #dfe4ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form-login{
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #fff;  
+  box-shadow: 1px 1px #95afc0;
+}
