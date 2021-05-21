@@ -19,5 +19,5 @@ export const EncriptText = (value) => {
 };
 
 export const DecriptText = (cipherText) => {
-	return Base64.decode('cipherText');
+	return Base64.decode(cipherText);
 };

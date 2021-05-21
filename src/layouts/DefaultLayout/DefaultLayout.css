@@ -1,0 +1,51 @@
+.custom-layout {
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.trigger {
+	padding: 0 24px;
+	font-size: 18px;
+	line-height: 64px;
+	cursor: pointer;
+	transition: color 0.3s;
+}
+
+.trigger :hover {
+	color: #1890ff;
+}
+.logo {
+	height: 32px;
+	margin: 16px;
+	background-image: url('https://i.imgur.com/Tnada86.jpg');
+	background-repeat: repeat;
+	background-size: contain;
+}
+
+.site-layout .site-layout-background {
+	background: #fff;
+}
+
+.layout-header {
+	display: flex;
+	justify-content: space-between;
+  align-items: center;
+  padding-left: 0px;
+}
+
+.ant-layout-sider:not(.ant-layout-sider-collapsed) {
+	flex: 0 0 250px !important;
+	max-width: 250px !important;
+}
+
+.ant-layout-sider {
+	background-color: #f9f9f9;
+	border: 1px solid #d6d6d6;
+	box-sizing: border-box;
+	box-shadow: 0px 0px 3px rgba(159, 163, 183, 0.51053);
+}
+
+.menu-sider {
+	height: 100%;
+}

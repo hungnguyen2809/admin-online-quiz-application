@@ -2,7 +2,7 @@ import { apis } from "./createApiService";
 
 export const loginAccountAPI = (args) => {
 	return apis.makeNonAuthRequest({
-		url: "",
+		url: "/adminlogin",
 		method: "POST",
 		data: args,
 	});

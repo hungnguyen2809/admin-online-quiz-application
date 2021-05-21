@@ -1,6 +1,6 @@
 import store from "store2";
 
-const _prefix = "OnlineQuiz";
+const _prefix = "OnlineQuiz_";
 
 const _getRealKey = (key, noPrefix = false) => {
 	if (noPrefix) {

@@ -1,15 +1,17 @@
 import axios from "axios";
+import { get } from "lodash";
 import queryString from "query-string";
-import "dotenv";
 import { getLocalData } from "../services/StoreService";
 
-const isProduct = true;
+const isProduct = false;
 
 const BaseAPI = {
 	BaseUrl: isProduct
-		? `http://${process.env.IP_HOST_PRODUCT}:${process.env.IP_PORT}/api`
-		: `http://${process.env.IP_HOST_DEV}:${process.env.IP_PORT}/api`,
+		? `http://${process.env.REACT_APP_IP_HOST_PRODUCT}:${process.env.REACT_APP_IP_PORT}/api`
+		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT}/api`,
 };
+
+const CancelToken = axios.CancelToken;
 
 const instanceAxios = axios.create({
 	baseURL: BaseAPI.BaseUrl,
@@ -18,14 +20,20 @@ const instanceAxios = axios.create({
 	paramsSerializer: (params) => queryString.stringify(params),
 });
 
+let cancelRequest = null;
 // Custom request ...
 instanceAxios.interceptors.request.use(async (config) => {
+	if (cancelRequest) {
+		cancelRequest();
+	}
+
+	config.cancelToken = cancelRequest;
 	return config;
 });
 
 // Custom response ...
 instanceAxios.interceptors.response.use(
-	(response) => {
+	async (response) => {
 		if (response && response.data) {
 			return {
 				status: response.status,
@@ -34,7 +42,17 @@ instanceAxios.interceptors.response.use(
 		}
 		return response;
 	},
-	(error) => {
+	async (error) => {
+		if (error.response) {
+			const { data } = error.response;
+			if (get(data, "token_invalid") === true) {
+				if (cancelRequest === null) {
+					new CancelToken((cancel) => {
+						cancelRequest = cancel;
+					});
+				}
+			}
+		}
 		throw error;
 	}
 );

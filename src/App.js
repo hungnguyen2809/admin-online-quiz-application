@@ -14,7 +14,6 @@ import DefaultLayout from "./layouts/DefaultLayout";
 class App extends Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {};
 	}
 
