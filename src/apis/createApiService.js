@@ -1,7 +1,7 @@
 import axios from "axios";
-import { get } from "lodash";
 import queryString from "query-string";
-import { getLocalData } from "../services/StoreService";
+import get from "lodash/get";
+import { getLocalData, setLocalData } from "../services/StoreService";
 
 const isProduct = false;
 
@@ -26,14 +26,15 @@ instanceAxios.interceptors.request.use(async (config) => {
 	if (cancelRequest) {
 		cancelRequest();
 	}
-
-	config.cancelToken = cancelRequest;
 	return config;
 });
 
 // Custom response ...
 instanceAxios.interceptors.response.use(
 	async (response) => {
+		if (cancelRequest) {
+			cancelRequest = null;
+		}
 		if (response && response.data) {
 			return {
 				status: response.status,
@@ -44,12 +45,19 @@ instanceAxios.interceptors.response.use(
 	},
 	async (error) => {
 		if (error.response) {
-			const { data } = error.response;
-			if (get(data, "token_invalid") === true) {
-				if (cancelRequest === null) {
-					new CancelToken((cancel) => {
-						cancelRequest = cancel;
-					});
+			const { response } = error;
+			const { data } = response;
+
+			if (response.status === 400) {
+				if (get(data, "token_invalid") === true) {
+					if (cancelRequest === null) {
+						new CancelToken((cancel) => {
+							cancelRequest = cancel;
+						});
+						setLocalData("access_token", "");
+						window.location.reload();
+					}
+					return { data };
 				}
 			}
 		}

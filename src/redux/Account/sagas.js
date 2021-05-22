@@ -26,6 +26,7 @@ function* workAccountLogin(action) {
 		notification.error({
 			message: "Đã xảy ra lỗi",
 			description: error.message,
+			style: { fontFamily: FONT_FAMILY },
 		});
 	}
 }
