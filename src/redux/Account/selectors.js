@@ -9,3 +9,9 @@ export const accountSelector = () => {
 		return state.get("account");
 	});
 };
+
+export const listAllAccountSelector = () => {
+	return createSelector(getStateAccount(), (state) => {
+		return state.get("listAllAccount");
+	});
+};

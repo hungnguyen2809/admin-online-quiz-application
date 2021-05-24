@@ -103,9 +103,6 @@ class DefaultLayout extends Component {
 							}
 						)}
 						<div>
-							<Text style={{ margin: "0px 10px" }}>
-								{get(infoAccount, "name")}
-							</Text>
 							<Dropdown overlay={this.menuAvatar} placement="bottomRight">
 								<Avatar
 									style={{ marginRight: 13 }}
@@ -118,6 +115,9 @@ class DefaultLayout extends Component {
 									}
 								/>
 							</Dropdown>
+							<Text style={{ margin: "0px 10px" }}>
+								{get(infoAccount, "name")}
+							</Text>
 						</div>
 					</Header>
 					<Content

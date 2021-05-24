@@ -1,4 +1,5 @@
 import { Upload, message, Button } from "antd";
+import { FileImageFilled } from "@ant-design/icons";
 import { isEmpty } from "lodash";
 import React from "react";
 import "./UploadImage.css";
@@ -61,7 +62,7 @@ class UploadImage extends React.Component {
 				fileList={this.state.fileList}
 				onChange={this.handleChange}
 			>
-				<Button>Chọn ảnh</Button>
+				<Button icon={<FileImageFilled />}>Chọn ảnh</Button>
 			</Upload>
 		);
 	}

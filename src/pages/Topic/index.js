@@ -53,8 +53,8 @@ class TopicManager extends Component {
 		}
 	}
 
-	onGetListTopic = () => {
-		this.setState({ loadingTopic: true, curPageTopic: 1 });
+	onGetListTopic = (page = 1) => {
+		this.setState({ loadingTopic: true, curPageTopic: page });
 		this.props.doGetListAllTopic();
 	};
 
@@ -102,7 +102,7 @@ class TopicManager extends Component {
 				};
 				this.props.doUpdateTopic(payload, {
 					callbackOnSuccess: () => {
-						this.onGetListTopic();
+						this.onGetListTopic(this.state.curPageTopic);
 						cbSuccess();
 					},
 				});

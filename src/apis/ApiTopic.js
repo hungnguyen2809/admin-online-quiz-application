@@ -4,7 +4,7 @@ export const getListAllTopics = () => {
 	return apis.makeAuthRequest({
 		url: "/topics",
 		method: "GET",
-		params: { permission: 1 },
+		params: { per: 1 },
 	});
 };
 

@@ -48,9 +48,8 @@ class DashBroad extends Component {
 							bgClolor={Colors.CLEAR_CHILL}
 							title={`Tài khoản hoạt động: ${get(
 								infoGarenal,
-								"number_user",
-								0
-							)}`}
+								"user_active"
+							)}/${get(infoGarenal, "number_user", 0)}`}
 							description={"Tổng số tài khoản đang hoạt động"}
 							icon={<BsFillPersonLinesFill color={"#fff"} size={20} />}
 						/>
@@ -58,7 +57,10 @@ class DashBroad extends Component {
 					<Col {...layoutRowCol}>
 						<Card
 							bgClolor={Colors.UFO_GREEN}
-							title={`Số chủ đề: ${get(infoGarenal, "number_topic", 0)}`}
+							title={`Chủ đề hoạt động: ${get(
+								infoGarenal,
+								"topic_active"
+							)}/${get(infoGarenal, "number_topic", 0)}`}
 							description={"Tổng số chủ đề đang hoạt động"}
 							icon={<DiGhostSmall color={"#fff"} size={20} />}
 						/>
