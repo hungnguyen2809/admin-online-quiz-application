@@ -15,6 +15,7 @@ import { Colors } from "../../constants/Styles";
 import TopicModal from "../../components/Modal/TopicModal";
 import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
 import { uploadImageAPI } from "../../apis/ApiCommon";
+import moment from "moment";
 
 class TopicManager extends Component {
 	constructor(props) {
@@ -108,7 +109,12 @@ class TopicManager extends Component {
 				});
 			}
 		} else {
-			this.props.doUpdateTopic(params, {
+			const url = new URL(params.image);
+			const payload = {
+				...params,
+				image: url.pathname,
+			};
+			this.props.doUpdateTopic(payload, {
 				callbackOnSuccess: () => {
 					this.onGetListTopic();
 					cbSuccess();
@@ -177,6 +183,11 @@ class TopicManager extends Component {
 				},
 			},
 			{
+				title: "Số đề thi",
+				dataIndex: "countDeThi",
+				key: "countDeThi",
+			},
+			{
 				title: "Trạng thái",
 				dataIndex: "status",
 				key: "status",
@@ -193,6 +204,9 @@ class TopicManager extends Component {
 				title: "Ngày cập nhật",
 				dataIndex: "date_update",
 				key: "date_update",
+				render: (value) => {
+					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+				},
 			},
 			{
 				title: "Thao tác",

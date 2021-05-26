@@ -3,7 +3,7 @@ import queryString from "query-string";
 import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
 
-const isProduct = false;
+const isProduct = true;
 
 const BaseAPI = {
 	BaseUrl: isProduct

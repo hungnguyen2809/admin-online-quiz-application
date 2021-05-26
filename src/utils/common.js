@@ -1,4 +1,6 @@
 import { Base64 } from "js-base64";
+import { toString } from "lodash";
+import XLSX from "xlsx";
 
 export const validateEmail = (email) => {
 	const rgExEmail =
@@ -20,4 +22,30 @@ export const EncriptText = (value) => {
 
 export const DecriptText = (cipherText) => {
 	return Base64.decode(cipherText);
+};
+
+export const ExportExcel = (data, fileName, nameSheet) => {
+	try {
+		const dotFile = ".xlsx";
+		if (
+			typeof data === "undefined" ||
+			typeof fileName === "undefined" ||
+			typeof nameSheet === "undefined"
+		) {
+			alert("Phải nhận đủ 3 tham số: dữ liệu, tên file, tên sheet");
+		}
+
+		if (typeof data !== "object") {
+			alert("Dữ liệu đầu vào phải là một array hoặc object");
+			return;
+		}
+
+		const ws = XLSX.utils.json_to_sheet(data);
+		let wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, toString(nameSheet));
+
+		XLSX.writeFile(wb, fileName + dotFile);
+	} catch (error) {
+		alert(error.message);
+	}
 };

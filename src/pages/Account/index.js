@@ -2,6 +2,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import { filter, get, isEmpty, lowerCase, map, size } from "lodash";
+import moment from "moment";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -86,7 +87,7 @@ class AccountManager extends Component {
 		this.setState({ showModalUpdate: !this.state.showModalUpdate });
 	};
 
-	onSubmitUodateAccount = (params, cbSuccess = () => {}) => {
+	onSubmitUpdateAccount = (params, cbSuccess = () => {}) => {
 		const payload = {
 			id: get(params, "id"),
 			email: get(params, "email"),
@@ -137,6 +138,7 @@ class AccountManager extends Component {
 				title: "Trạng thái",
 				dataIndex: "status",
 				key: "status",
+				sorter: (a, b) => a.status - b.status,
 				render: (value) => {
 					let color = value === 1 ? Colors.UFO_GREEN : Colors.TOMATO_RED;
 					return (
@@ -150,6 +152,7 @@ class AccountManager extends Component {
 				title: "Quyền",
 				dataIndex: "permission",
 				key: "permission",
+				sorter: (a, b) => a.permission - b.permission,
 				render: (value) => {
 					let color = value === 1 ? Colors.RED_ORANGE : Colors.DARK_MOUNTAIN;
 					return (
@@ -161,11 +164,17 @@ class AccountManager extends Component {
 				title: "Ngày tạo",
 				dataIndex: "date_create",
 				key: "date_create",
+				render: (value) => {
+					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+				},
 			},
 			{
 				title: "Ngày cập nhật",
 				dataIndex: "date_update",
 				key: "date_update",
+				render: (value) => {
+					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+				},
 			},
 			{
 				title: "Thao tác",
@@ -219,7 +228,7 @@ class AccountManager extends Component {
 					visible={this.state.showModalUpdate}
 					dataSource={this.state.dataSourceUpdate}
 					onCancel={this.openCloseModalUpdate}
-					onSubmit={this.onSubmitUodateAccount}
+					onSubmit={this.onSubmitUpdateAccount}
 				/>
 			</div>
 		);

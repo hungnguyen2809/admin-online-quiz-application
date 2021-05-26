@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import store, { history } from "./redux/store";
 import "antd/dist/antd.css";
+import "./css/Content.css";
 import { BrowserRouter, Router, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
