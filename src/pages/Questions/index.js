@@ -96,6 +96,7 @@ class QuestionManager extends Component {
 			id_qs: this.state.questionSetOption,
 			per: 1,
 		};
+		this.setState({ loadingQuestion: true });
 		this.props.doGetListQuestion(payload, {
 			callbackOnSuccess: (res) => {
 				const mapData = map(res, (item, idx) => {
@@ -104,7 +105,7 @@ class QuestionManager extends Component {
 						key: idx + 1,
 					};
 				});
-				this.setState({ listQuestion: mapData });
+				this.setState({ listQuestion: mapData, loadingQuestion: false });
 			},
 		});
 	};
@@ -379,6 +380,7 @@ class QuestionManager extends Component {
 					</Col>
 				</Row>
 				<Table
+					loading={this.state.loadingQuestion}
 					columns={colums}
 					dataSource={this.state.listQuestion}
 					style={{ margin: "20px 0px" }}
