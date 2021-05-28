@@ -3,12 +3,16 @@ import queryString from "query-string";
 import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
 
-const isProduct = true;
+// const isProduct = true;
+
+// const BaseAPI = {
+// 	BaseUrl: isProduct
+// 		? `http://${process.env.REACT_APP_IP_HOST_PRODUCT}:${process.env.REACT_APP_IP_PORT}/api`
+// 		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT}/api`,
+// };
 
 const BaseAPI = {
-	BaseUrl: isProduct
-		? `http://${process.env.REACT_APP_IP_HOST_PRODUCT}:${process.env.REACT_APP_IP_PORT}/api`
-		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT}/api`,
+	BaseUrl: "http://35.163.171.214:8888/api",
 };
 
 const CancelToken = axios.CancelToken;
