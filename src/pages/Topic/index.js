@@ -112,11 +112,11 @@ class TopicManager extends Component {
 			const url = new URL(params.image);
 			const payload = {
 				...params,
-				image: url.pathname,
+				image: url.pathname.replace('/', ''), // chỉ thay thế cho ký tự đầu tiên.
 			};
 			this.props.doUpdateTopic(payload, {
 				callbackOnSuccess: () => {
-					this.onGetListTopic();
+					this.onGetListTopic(this.state.curPageTopic);
 					cbSuccess();
 				},
 			});
