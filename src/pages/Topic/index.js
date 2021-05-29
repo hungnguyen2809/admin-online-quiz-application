@@ -16,6 +16,7 @@ import TopicModal from "../../components/Modal/TopicModal";
 import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
 import { uploadImageAPI } from "../../apis/ApiCommon";
 import moment from "moment";
+import { dateFormat, dateTimeFormat } from "../../utils/common";
 
 class TopicManager extends Component {
 	constructor(props) {
@@ -112,7 +113,7 @@ class TopicManager extends Component {
 			const url = new URL(params.image);
 			const payload = {
 				...params,
-				image: url.pathname.replace('/', ''), // chỉ thay thế cho ký tự đầu tiên.
+				image: url.pathname.replace("/", ""), // chỉ thay thế cho ký tự đầu tiên.
 			};
 			this.props.doUpdateTopic(payload, {
 				callbackOnSuccess: () => {
@@ -201,11 +202,19 @@ class TopicManager extends Component {
 				},
 			},
 			{
+				title: "Ngày tạo",
+				dataIndex: "date_create",
+				key: "date_create",
+				render: (value) => {
+					return <span>{moment(value).format(dateFormat)}</span>;
+				},
+			},
+			{
 				title: "Ngày cập nhật",
 				dataIndex: "date_update",
 				key: "date_update",
 				render: (value) => {
-					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+					return <span>{moment(value).format(dateTimeFormat)}</span>;
 				},
 			},
 			{

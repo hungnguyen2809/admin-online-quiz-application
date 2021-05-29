@@ -2,6 +2,9 @@ import { Base64 } from "js-base64";
 import { toString } from "lodash";
 import XLSX from "xlsx";
 
+export const dateFormat = "DD/MM/YYYY";
+export const dateTimeFormat = "DD/MM/YYYY - HH:mm";
+
 export const validateEmail = (email) => {
 	const rgExEmail =
 		/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
