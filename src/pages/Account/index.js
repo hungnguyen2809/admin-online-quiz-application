@@ -13,6 +13,7 @@ import {
 	handleUpdateUserInfoAction,
 } from "../../redux/Account/actions";
 import { listAllAccountSelector } from "../../redux/Account/selectors";
+import { dateFormat, dateTimeFormat } from "../../utils/common";
 
 class AccountManager extends Component {
 	constructor(props) {
@@ -165,7 +166,7 @@ class AccountManager extends Component {
 				dataIndex: "date_create",
 				key: "date_create",
 				render: (value) => {
-					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+					return <span>{moment(value).format(dateFormat)}</span>;
 				},
 			},
 			{
@@ -173,7 +174,7 @@ class AccountManager extends Component {
 				dataIndex: "date_update",
 				key: "date_update",
 				render: (value) => {
-					return <span>{moment(value).format("DD-MM-YYYY")}</span>;
+					return <span>{moment(value).format(dateTimeFormat)}</span>;
 				},
 			},
 			{
