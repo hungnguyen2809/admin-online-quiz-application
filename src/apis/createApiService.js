@@ -4,7 +4,7 @@ import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
 import { notification } from "antd";
 
-const isProduct = true;
+const isProduct = false;
 
 const BaseAPI = {
 	BaseUrlImage: "https://api.cloudinary.com/v1_1/hungnguyen2809/image/upload",
@@ -114,7 +114,7 @@ export const apis = {
 
 export const makeUploadImage = async (imageFile) => {
 	try {
-		if (!imageFile) {
+		if (typeof imageFile !== "object") {
 			notification.error({
 				message: "Thông báo",
 				description: "Chưa có file ảnh.",
@@ -123,8 +123,8 @@ export const makeUploadImage = async (imageFile) => {
 		}
 
 		const uploadPreset = isProduct
-			? "online-quiz-avatar"
-			: "online-quiz-dev-avatar";
+			? "online-quiz-topics"
+			: "online-quiz-dev-topics";
 		const formData = new FormData();
 		formData.append("cloud_name", "hungnguyen2809");
 		formData.append("upload_preset", uploadPreset);

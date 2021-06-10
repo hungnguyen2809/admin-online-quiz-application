@@ -1,9 +1,9 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { Button, Col, Input, Modal, notification, Row } from "antd";
+import { Button, Col, Input, Modal, notification, Row, Spin } from "antd";
 import Title from "antd/lib/typography/Title";
-import { FONT_FAMILY } from "../../constants/Styles";
 import { debounce, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
+import { FONT_FAMILY } from "../../constants/Styles";
 import UploadImage from "../UploadImage";
 
 class TopicModal extends PureComponent {
@@ -14,6 +14,7 @@ class TopicModal extends PureComponent {
 			nameTopic: "",
 			desTopic: "",
 			image: null,
+			loading: false,
 		};
 
 		this.refUploadImage = React.createRef();
@@ -22,7 +23,7 @@ class TopicModal extends PureComponent {
 	componentDidMount() {}
 
 	onCloseModal = () => {
-		this.setState({ nameTopic: "", desTopic: "", image: null });
+		this.setState({ nameTopic: "", desTopic: "", image: null, loading: false });
 		this.refUploadImage.current.onEmptyFileList &&
 			this.refUploadImage.current.onEmptyFileList();
 		this.props.onCancel && this.props.onCancel();
@@ -43,12 +44,13 @@ class TopicModal extends PureComponent {
 			});
 			return;
 		}
-		const paylaod = {
+		const payload = {
 			image: this.state.image,
 			nameTopic: this.state.nameTopic,
 			desTopic: this.state.desTopic,
 		};
-		this.props.onSubmit && this.props.onSubmit(paylaod, this.onCloseModal);
+		this.setState({ loading: true });
+		this.props.onSubmit && this.props.onSubmit(payload, this.onCloseModal);
 	};
 
 	render() {
@@ -57,7 +59,7 @@ class TopicModal extends PureComponent {
 				visible={this.props.visible}
 				style={{ fontFamily: FONT_FAMILY }}
 				width={500}
-				onCancel={debounce(this.onCloseModal, 300)}
+				closeIcon={[]}
 				footer={[
 					<Button
 						key={"submit"}
@@ -71,48 +73,50 @@ class TopicModal extends PureComponent {
 					</Button>,
 				]}
 			>
-				<Title level={5} style={{ textAlign: "center" }}>
-					Thêm mới chủ đề
-				</Title>
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<Input
-							value={this.state.nameTopic}
-							placeholder={"Tên chủ đề"}
-							style={{ width: "100%", height: 36 }}
-							onChange={(ev) => {
-								this.setState({ nameTopic: ev.target.value });
-							}}
-							max={200}
-						/>
-					</Col>
-				</Row>
-				<br />
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<Input.TextArea
-							value={this.state.desTopic}
-							autoSize={{ maxRows: 5, minRows: 5 }}
-							placeholder={"Mô tả"}
-							style={{ width: "100%", height: 36 }}
-							onChange={(ev) => {
-								this.setState({ desTopic: ev.target.value });
-							}}
-							maxLength={250}
-						/>
-					</Col>
-				</Row>
-				<br />
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<UploadImage
-							ref={this.refUploadImage}
-							onChangeFile={(data) => {
-								this.setState({ image: data });
-							}}
-						/>
-					</Col>
-				</Row>
+				<Spin spinning={this.state.loading}>
+					<Title level={5} style={{ textAlign: "center" }}>
+						Thêm mới chủ đề
+					</Title>
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<Input
+								value={this.state.nameTopic}
+								placeholder={"Tên chủ đề"}
+								style={{ width: "100%", height: 36 }}
+								onChange={(ev) => {
+									this.setState({ nameTopic: ev.target.value });
+								}}
+								max={200}
+							/>
+						</Col>
+					</Row>
+					<br />
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<Input.TextArea
+								value={this.state.desTopic}
+								autoSize={{ maxRows: 5, minRows: 5 }}
+								placeholder={"Mô tả"}
+								style={{ width: "100%", height: 36 }}
+								onChange={(ev) => {
+									this.setState({ desTopic: ev.target.value });
+								}}
+								maxLength={250}
+							/>
+						</Col>
+					</Row>
+					<br />
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<UploadImage
+								ref={this.refUploadImage}
+								onChangeFile={(data) => {
+									this.setState({ image: data });
+								}}
+							/>
+						</Col>
+					</Row>
+				</Spin>
 			</Modal>
 		);
 	}

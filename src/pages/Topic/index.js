@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { Button, Col, Image, Input, Row, Table } from "antd";
+import { Button, Col, Image, Input, notification, Row, Table } from "antd";
 import { PlusCircleFilled, SearchOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import {
@@ -11,12 +11,13 @@ import {
 } from "../../redux/Topics/actions";
 import { getListTopicSelector } from "../../redux/Topics/selectors";
 import { debounce, filter, get, isEmpty, lowerCase, map, size } from "lodash";
-import { Colors } from "../../constants/Styles";
+import { Colors, FONT_FAMILY } from "../../constants/Styles";
 import TopicModal from "../../components/Modal/TopicModal";
 import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
 import { uploadImageAPI } from "../../apis/ApiCommon";
 import moment from "moment";
 import { dateFormat, dateTimeFormat } from "../../utils/common";
+import { makeUploadImage } from "../../apis/createApiService";
 
 class TopicManager extends Component {
 	constructor(props) {
@@ -73,13 +74,12 @@ class TopicManager extends Component {
 	};
 
 	onSubmitCreateTopic = async (params, cbSuccess = () => {}) => {
-		const formData = new FormData();
-		formData.append("file", get(params, "image"));
+		try {
+			const fileImage = get(params, "image", null);
+			const response = await makeUploadImage(fileImage);
 
-		const response = await uploadImageAPI(formData);
-		if (response.status === 200 && response.error === false) {
 			const payload = {
-				image: response.payload,
+				image: response.secure_url,
 				name: get(params, "nameTopic"),
 				description: get(params, "desTopic"),
 			};
@@ -89,18 +89,22 @@ class TopicManager extends Component {
 					cbSuccess();
 				},
 			});
+		} catch (error) {
+			notification.error({
+				message: "Thông báo",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
 		}
 	};
 
 	onSubmitUpdateTopic = async (params, imageFile, cbSuccess = () => {}) => {
-		if (imageFile) {
-			const formData = new FormData();
-			formData.append("file", imageFile);
-			const response = await uploadImageAPI(formData);
-			if (response.status === 200 && response.error === false) {
+		try {
+			if (imageFile) {
+				const response = await makeUploadImage(imageFile);
 				const payload = {
 					...params,
-					image: response.payload,
+					image: response.secure_url,
 				};
 				this.props.doUpdateTopic(payload, {
 					callbackOnSuccess: () => {
@@ -108,18 +112,19 @@ class TopicManager extends Component {
 						cbSuccess();
 					},
 				});
+			} else {
+				this.props.doUpdateTopic(params, {
+					callbackOnSuccess: () => {
+						this.onGetListTopic(this.state.curPageTopic);
+						cbSuccess();
+					},
+				});
 			}
-		} else {
-			const url = new URL(params.image);
-			const payload = {
-				...params,
-				image: url.pathname.replace("/", ""), // chỉ thay thế cho ký tự đầu tiên.
-			};
-			this.props.doUpdateTopic(payload, {
-				callbackOnSuccess: () => {
-					this.onGetListTopic(this.state.curPageTopic);
-					cbSuccess();
-				},
+		} catch (error) {
+			notification.error({
+				message: "Thông báo",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
 			});
 		}
 	};
