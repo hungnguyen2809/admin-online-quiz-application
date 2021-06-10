@@ -2,18 +2,16 @@ import axios from "axios";
 import queryString from "query-string";
 import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
+import { notification } from "antd";
 
 const isProduct = true;
 
 const BaseAPI = {
+	BaseUrlImage: "https://api.cloudinary.com/v1_1/hungnguyen2809/image/upload",
 	BaseUrl: isProduct
-		? `http://${process.env.REACT_APP_IP_HOST_PRODUCT}:${process.env.REACT_APP_IP_PORT}/api`
-		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT}/api`,
+		? "https://server-online-quiz.herokuapp.com/api"
+		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT_DEV}/api`,
 };
-
-// const BaseAPI = {
-// 	BaseUrl: "http://35.163.171.214:8888/api",
-// };
 
 const CancelToken = axios.CancelToken;
 
@@ -112,4 +110,39 @@ const _makeNonAuthRequest = (instanceRequest) => async (args) => {
 export const apis = {
 	makeAuthRequest: _makeAuthRequest(instanceAxios),
 	makeNonAuthRequest: _makeNonAuthRequest(instanceAxios),
+};
+
+export const makeUploadImage = async (imageFile) => {
+	try {
+		if (!imageFile) {
+			notification.error({
+				message: "Thông báo",
+				description: "Chưa có file ảnh.",
+			});
+			return;
+		}
+
+		const uploadPreset = isProduct
+			? "online-quiz-avatar"
+			: "online-quiz-dev-avatar";
+		const formData = new FormData();
+		formData.append("cloud_name", "hungnguyen2809");
+		formData.append("upload_preset", uploadPreset);
+		formData.append("file", imageFile);
+
+		const response = await axios.post(BaseAPI.BaseUrlImage, formData);
+		return {
+			...response.data,
+		};
+	} catch (error) {
+		if (error.response) {
+			const { response } = error;
+			notification.error({
+				message: "Đã xảy ra lôi",
+				description: get(response, "data.error.message", ""),
+			});
+			return;
+		}
+		throw error;
+	}
 };
