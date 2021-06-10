@@ -4,7 +4,7 @@ import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
 import { notification } from "antd";
 
-const isProduct = false;
+const isProduct = true;
 
 const BaseAPI = {
 	BaseUrlImage: "https://api.cloudinary.com/v1_1/hungnguyen2809/image/upload",

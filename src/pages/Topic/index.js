@@ -1,23 +1,22 @@
+import { PlusCircleFilled, SearchOutlined } from "@ant-design/icons";
+import { Button, Col, Image, Input, notification, Row, Table } from "antd";
+import Title from "antd/lib/typography/Title";
+import { debounce, filter, get, isEmpty, lowerCase, map, size } from "lodash";
+import moment from "moment";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { Button, Col, Image, Input, notification, Row, Table } from "antd";
-import { PlusCircleFilled, SearchOutlined } from "@ant-design/icons";
-import Title from "antd/lib/typography/Title";
+import { makeUploadImage } from "../../apis/createApiService";
+import TopicModal from "../../components/Modal/TopicModal";
+import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
+import { Colors, FONT_FAMILY } from "../../constants/Styles";
 import {
 	getAllTopicAction,
 	handleCreateTopic,
-	handleUpdateTopic,
+	handleUpdateTopic
 } from "../../redux/Topics/actions";
 import { getListTopicSelector } from "../../redux/Topics/selectors";
-import { debounce, filter, get, isEmpty, lowerCase, map, size } from "lodash";
-import { Colors, FONT_FAMILY } from "../../constants/Styles";
-import TopicModal from "../../components/Modal/TopicModal";
-import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
-import { uploadImageAPI } from "../../apis/ApiCommon";
-import moment from "moment";
 import { dateFormat, dateTimeFormat } from "../../utils/common";
-import { makeUploadImage } from "../../apis/createApiService";
 
 class TopicManager extends Component {
 	constructor(props) {
