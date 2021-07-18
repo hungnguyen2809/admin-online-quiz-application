@@ -4,9 +4,11 @@ import {
 	getListAllAccountAPI,
 	handleUpdateUserInfoAPI,
 	loginAccountAPI,
+	unregisterRefreshTokenAPI,
 } from "../../apis/ApiAccount";
 import { setLocalData } from "../../services/StoreService";
 import {
+	ACCOUNT_UNREGISTER_TOKEN_REFRESH,
 	ADMIN_ACCOUNT_GET_ALL_ACCOUNT,
 	ADMIN_ACCOUNT_UPDATE_INFO_USER,
 	AUTH_ACCOUNT_LOGIN,
@@ -22,7 +24,7 @@ function* workAccountLogin(action) {
 		const response = yield call(loginAccountAPI, action.payload.data);
 		if (response.status === 200 && response.error === false) {
 			// yield put(handleLoginAccountActionDone(response.payload));
-			yield setLocalData("access_token", get(response.payload, "token"));
+			yield setLocalData("access_token", get(response.payload, "userToken"));
 			yield callbackOnSuccess();
 		} else {
 			notification.error({
@@ -32,11 +34,19 @@ function* workAccountLogin(action) {
 			});
 		}
 	} catch (error) {
-		notification.error({
-			message: "Đã xảy ra lỗi",
-			description: error.message,
-			style: { fontFamily: FONT_FAMILY },
-		});
+		if (error.response) {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: JSON.stringify(error.response.data),
+				style: { fontFamily: FONT_FAMILY },
+			});
+		} else {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
+		}
 	}
 }
 
@@ -75,11 +85,19 @@ function* workGetListAllAccount(action) {
 			});
 		}
 	} catch (error) {
-		notification.error({
-			message: "Đã xảy ra lỗi",
-			description: error.message,
-			style: { fontFamily: FONT_FAMILY },
-		});
+		if (error.response) {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: JSON.stringify(error.response.data),
+				style: { fontFamily: FONT_FAMILY },
+			});
+		} else {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
+		}
 	}
 }
 
@@ -110,8 +128,35 @@ function* watcherUpdateUserInfoAdmin() {
 	yield takeLatest(ADMIN_ACCOUNT_UPDATE_INFO_USER, workUpdateUserInfoAdmin);
 }
 
+function* WorkUnregisterTokenRefresh(action) {
+	const { callbacksOnSuccess, callbacksOnFail } = action.callbacks;
+	try {
+		const response = yield call(unregisterRefreshTokenAPI, action.payload.data);
+		if (response.status === 200 && response.error === false) {
+			yield callbacksOnSuccess();
+		} else {
+			yield callbacksOnFail();
+			notification.info("Thông báo", response.message);
+		}
+	} catch (error) {
+		if (error.response) {
+			yield callbacksOnFail();
+		} else {
+			yield callbacksOnFail();
+		}
+	}
+}
+
+function* WatcherUnregisterTokenRefresh() {
+	yield takeLatest(
+		ACCOUNT_UNREGISTER_TOKEN_REFRESH,
+		WorkUnregisterTokenRefresh
+	);
+}
+
 export default function* AccountSagas() {
 	yield fork(watcherAccountLogin);
 	yield fork(watcherGetListAllAccount);
 	yield fork(watcherUpdateUserInfoAdmin);
+	yield fork(WatcherUnregisterTokenRefresh);
 }

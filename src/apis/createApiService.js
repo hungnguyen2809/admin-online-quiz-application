@@ -1,5 +1,6 @@
 import axios from "axios";
 import queryString from "query-string";
+import jwtDecode from "jwt-decode";
 import get from "lodash/get";
 import { getLocalData, setLocalData } from "../services/StoreService";
 import { notification } from "antd";
@@ -13,8 +14,6 @@ const BaseAPI = {
 		: `http://${process.env.REACT_APP_IP_HOST_DEV}:${process.env.REACT_APP_IP_PORT_DEV}/api`,
 };
 
-const CancelToken = axios.CancelToken;
-
 const instanceAxios = axios.create({
 	baseURL: BaseAPI.BaseUrl,
 	timeout: 10000,
@@ -22,21 +21,14 @@ const instanceAxios = axios.create({
 	paramsSerializer: (params) => queryString.stringify(params),
 });
 
-let cancelRequest = null;
 // Custom request ...
-instanceAxios.interceptors.request.use(async (config) => {
-	if (cancelRequest) {
-		cancelRequest();
-	}
+instanceAxios.interceptors.request.use((config) => {
 	return config;
 });
 
 // Custom response ...
 instanceAxios.interceptors.response.use(
-	async (response) => {
-		if (cancelRequest) {
-			cancelRequest = null;
-		}
+	(response) => {
 		if (response && response.data) {
 			return {
 				status: response.status,
@@ -45,45 +37,63 @@ instanceAxios.interceptors.response.use(
 		}
 		return response;
 	},
-	async (error) => {
+	(error) => {
 		if (error.response) {
 			const { response } = error;
 			const { data } = response;
-
-			if (response.status === 400) {
-				if (get(data, "token_invalid") === true) {
-					if (cancelRequest === null) {
-						new CancelToken((cancel) => {
-							cancelRequest = cancel;
-						});
-						setLocalData("access_token", "");
-						window.location.reload();
-					}
-					return { data };
-				}
+			if (get(data, "token_invalid")) {
+				notification.info({
+					message: "Thông báo",
+					description: "Bạn cần đăng nhập lại",
+				});
+				setLocalData("access_token", "");
+				window.location.reload();
 			}
 		}
 		throw error;
 	}
 );
 
+let refreshTokenRequest = null;
+let tokenAuth = "";
+let setTokenStorage = null;
 const _makeAuthRequest = (instanceRequest) => async (args) => {
-	const requestHeaders = args.headers ? args.headers : {};
-
-	const token = getLocalData("access_token");
-	const authHeaders = {
-		"AuthToken-VTNH": token,
-	};
-
-	const options = {
-		...args,
-		headers: {
-			...requestHeaders,
-			...authHeaders,
-		},
-	};
-
 	try {
+		const { token, tokenRefresh } = getLocalData("access_token");
+		tokenAuth = token;
+		const decodeToken = jwtDecode(token);
+		const expiresToken = Date.now() / 1000 >= decodeToken.exp;
+		if (expiresToken) {
+			refreshTokenRequest = refreshTokenRequest
+				? refreshTokenRequest
+				: apis.makeNonAuthRequest({
+						url: "/refresh-token",
+						method: "POST",
+						data: { id_user: decodeToken.id, token: tokenRefresh },
+				  });
+			const responseToken = await refreshTokenRequest;
+			refreshTokenRequest = null;
+
+			if (responseToken.error === false && responseToken.status === 200) {
+				setTokenStorage = setTokenStorage
+					? setTokenStorage
+					: setLocalData("access_token", responseToken.payload);
+				await setTokenStorage;
+				setTokenStorage = null;
+				tokenAuth = responseToken.payload.token;
+			}
+		}
+		const requestHeaders = args.headers ? args.headers : {};
+		const authHeaders = { "AuthToken-VTNH": tokenAuth };
+
+		const options = {
+			...args,
+			headers: {
+				...requestHeaders,
+				...authHeaders,
+			},
+		};
+
 		return await instanceRequest(options);
 	} catch (error) {
 		throw error;

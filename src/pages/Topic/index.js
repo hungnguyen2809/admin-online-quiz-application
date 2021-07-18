@@ -14,7 +14,7 @@ import { debounce, filter, get, isEmpty, lowerCase, map, size } from "lodash";
 import { Colors, FONT_FAMILY } from "../../constants/Styles";
 import TopicModal from "../../components/Modal/TopicModal";
 import UpdateTopicModal from "../../components/Modal/UpdateTopicModal";
-import { uploadImageAPI } from "../../apis/ApiCommon";
+// import { uploadImageAPI } from "../../apis/ApiCommon";
 import moment from "moment";
 import { dateFormat, dateTimeFormat } from "../../utils/common";
 import { makeUploadImage } from "../../apis/createApiService";

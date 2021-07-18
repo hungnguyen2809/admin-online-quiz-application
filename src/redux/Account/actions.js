@@ -1,4 +1,5 @@
 import {
+	ACCOUNT_UNREGISTER_TOKEN_REFRESH,
 	ADMIN_ACCOUNT_GET_ALL_ACCOUNT,
 	ADMIN_ACCOUNT_GET_ALL_ACCOUNT_DONE,
 	ADMIN_ACCOUNT_UPDATE_INFO_USER,
@@ -39,6 +40,14 @@ export const getListAllAccountActionDone = (data) => {
 export const handleUpdateUserInfoAction = (data, callbacks) => {
 	return {
 		type: ADMIN_ACCOUNT_UPDATE_INFO_USER,
+		payload: { data },
+		callbacks,
+	};
+};
+
+export const unregisterRefreshTokenAction = (data, callbacks) => {
+	return {
+		type: ACCOUNT_UNREGISTER_TOKEN_REFRESH,
 		payload: { data },
 		callbacks,
 	};

@@ -45,11 +45,19 @@ function* workGetListAllTopic(action) {
 			});
 		}
 	} catch (error) {
-		notification.error({
-			message: "Đã xảy ra lỗi",
-			description: error.message,
-			style: { fontFamily: FONT_FAMILY },
-		});
+		if (error.response) {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: JSON.stringify(error.response.data),
+				style: { fontFamily: FONT_FAMILY },
+			});
+		} else {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
+		}
 	}
 }
 
@@ -76,11 +84,19 @@ function* workCreateTopic(action) {
 			});
 		}
 	} catch (error) {
-		notification.error({
-			message: "Đã xảy ra lỗi",
-			description: error.message,
-			style: { fontFamily: FONT_FAMILY },
-		});
+		if (error.response) {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: JSON.stringify(error.response.data),
+				style: { fontFamily: FONT_FAMILY },
+			});
+		} else {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
+		}
 	}
 }
 
@@ -107,11 +123,19 @@ function* workUpdateTopic(action) {
 			});
 		}
 	} catch (error) {
-		notification.error({
-			message: "Đã xảy ra lỗi",
-			description: error.message,
-			style: { fontFamily: FONT_FAMILY },
-		});
+		if (error.response) {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: JSON.stringify(error.response.data),
+				style: { fontFamily: FONT_FAMILY },
+			});
+		} else {
+			notification.error({
+				message: "Đã xảy ra lỗi",
+				description: error.message,
+				style: { fontFamily: FONT_FAMILY },
+			});
+		}
 	}
 }
 
