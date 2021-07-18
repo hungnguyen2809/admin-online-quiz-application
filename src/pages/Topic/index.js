@@ -13,7 +13,7 @@ import { Colors, FONT_FAMILY } from "../../constants/Styles";
 import {
 	getAllTopicAction,
 	handleCreateTopic,
-	handleUpdateTopic
+	handleUpdateTopic,
 } from "../../redux/Topics/actions";
 import { getListTopicSelector } from "../../redux/Topics/selectors";
 import { dateFormat, dateTimeFormat } from "../../utils/common";

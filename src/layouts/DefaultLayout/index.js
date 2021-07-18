@@ -16,6 +16,8 @@ import confirm from "antd/lib/modal/confirm";
 import { FONT_FAMILY } from "../../constants/Styles";
 import SwitcherRouteComponent, { useRoutes } from "./useRoutes";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { unregisterRefreshTokenAction } from "../../redux/Account/actions";
 
 class DefaultLayout extends Component {
 	constructor(props) {
@@ -43,8 +45,15 @@ class DefaultLayout extends Component {
 			title: "Bạn có chắc muốn đăng xuất ?",
 			style: { fontFamily: FONT_FAMILY },
 			onOk: () => {
-				setLocalData("access_token", "");
-				window.location.href = "/login";
+				const tokenStorage = getLocalData("access_token");
+				const payload = { token: get(tokenStorage, "tokenRefresh", "") };
+				this.props.doUnregisterRefreshToken(payload, {
+					callbacksOnSuccess: async () => {
+						setLocalData("access_token", "");
+						window.location.href = "/login";
+					},
+					callbacksOnFail: () => {},
+				});
 			},
 		});
 	};
@@ -58,7 +67,8 @@ class DefaultLayout extends Component {
 	};
 
 	render() {
-		const infoAccount = jwtDecode(getLocalData("access_token"));
+		const { token } = getLocalData("access_token");
+		const infoAccount = jwtDecode(token);
 		return (
 			<Layout className="custom-layout">
 				<Sider
@@ -136,4 +146,12 @@ class DefaultLayout extends Component {
 	}
 }
 
-export default DefaultLayout;
+const mapDispatchToProps = (dispatch) => {
+	return {
+		doUnregisterRefreshToken: (data, callbacks) => {
+			dispatch(unregisterRefreshTokenAction(data, callbacks));
+		},
+	};
+};
+
+export default connect(null, mapDispatchToProps)(DefaultLayout);

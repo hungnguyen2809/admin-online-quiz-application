@@ -23,3 +23,11 @@ export const handleUpdateUserInfoAPI = (args) => {
 		data: args,
 	});
 };
+
+export const unregisterRefreshTokenAPI = (agrs) => {
+	return apis.makeAuthRequest({
+		url: "/unregister-token",
+		method: "POST",
+		data: agrs,
+	});
+};
