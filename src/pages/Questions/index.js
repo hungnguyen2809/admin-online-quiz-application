@@ -120,8 +120,6 @@ class QuestionManager extends Component {
 
 	onSubmitAddQuestion = (dataQues, dataExam, cb = () => {}) => {
 		let total = size(dataQues);
-		console.log(dataExam);
-		console.log(dataQues);
 		if (get(dataExam, "isCreate")) {
 			let payload = {
 				type: 1,
