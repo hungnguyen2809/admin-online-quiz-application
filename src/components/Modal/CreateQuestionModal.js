@@ -7,6 +7,7 @@ import {
 	Row,
 	Select,
 	Switch,
+	Spin,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
@@ -46,6 +47,7 @@ class CreateQuestionModal extends PureComponent {
 			level: null,
 
 			file: null,
+			loading: false,
 		};
 	}
 
@@ -71,6 +73,7 @@ class CreateQuestionModal extends PureComponent {
 			nameExam: "",
 			file: null,
 			level: null,
+			loading: false,
 		});
 		document.getElementById("inputFileExcel").value = null;
 		this.props.onCancel && this.props.onCancel();
@@ -96,10 +99,12 @@ class CreateQuestionModal extends PureComponent {
 			notification.info({ message: "Chưa chọn file câu hỏi" });
 			return;
 		}
+		this.setState({ loading: true });
 		try {
 			ReadFileExcell(this.state.file).then((rows) => {
 				if (size(rows) === 1) {
 					notification.info({ message: "File chưa có câu hỏi" });
+					this.setState({ loading: false });
 				} else {
 					try {
 						rows.shift();
@@ -122,12 +127,14 @@ class CreateQuestionModal extends PureComponent {
 						this.props.onSubmit &&
 							this.props.onSubmit(dataQues, payload, this.onCloseModal);
 					} catch (error) {
-						alert(error.message);
+						window.alert(error.message);
+						this.setState({ loading: false });
 					}
 				}
 			});
 		} catch (error) {
-			alert(error.message);
+			window.alert(error.message);
+			this.setState({ loading: false });
 		}
 	};
 
@@ -174,93 +181,95 @@ class CreateQuestionModal extends PureComponent {
 					>
 						Xác nhận
 					</Button>,
-					<Button key={"destrp=oy"} onClick={debounce(this.onCloseModal, 300)}>
+					<Button key={"destroy"} onClick={debounce(this.onCloseModal, 300)}>
 						Hủy
 					</Button>,
 				]}
 			>
-				<Title level={5} style={{ textAlign: "center", marginBottom: 10 }}>
-					Thêm mới câu hỏi
-				</Title>
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<Select
-							value={this.state.questionSetOption}
-							style={{ width: "100%" }}
-							placeholder={"Chọn đề thi"}
-							onChange={this.onChangeQuestionSetOption}
-						>
-							{map(this.state.listQuestionSet, (item) => {
-								return (
-									<Option key={item.id} value={item.id}>
-										{get(item, "description")}
-									</Option>
-								);
-							})}
-						</Select>
-					</Col>
-				</Row>
-				<br />
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<Text style={{ marginRight: 10 }}>Tạo đề mới</Text>
-						<Switch
-							checked={this.state.checkCreate}
-							onChange={(checked) => {
-								if (checked === false) {
-									this.setState({
-										checkCreate: checked,
-										nameExam: "",
-										questionSetOption: null,
-										level: null,
-									});
-								} else {
-									this.setState({
-										checkCreate: checked,
-										questionSetOption: null,
-										level: null,
-									});
-								}
-							}}
-						/>
-						<Input
-							disabled={!this.state.checkCreate}
-							placeholder={"Tên đề thi"}
-							value={this.state.nameExam}
-							style={{ width: "100%", height: 36, marginTop: 10 }}
-							onChange={(ev) => this.setState({ nameExam: ev.target.value })}
-						/>
-						<Select
-							disabled={!this.state.checkCreate}
-							value={this.state.level}
-							style={{ width: "100%", marginTop: 10 }}
-							placeholder={"Chọn mức độ"}
-							onChange={this.onChangeLevelOption}
-						>
-							{map(optionsLevel, (item) => {
-								return (
-									<Option key={item.value} value={item.value}>
-										{item.label}
-									</Option>
-								);
-							})}
-						</Select>
-					</Col>
-				</Row>
-				<br />
-				<Row gutter={[10, 10]}>
-					<Col span={24}>
-						<Button onClick={this.onDowloadTempalte}>Tải về mẫu</Button>
-						<br />
-						<input
-							id="inputFileExcel"
-							type={"file"}
-							style={{ margin: "10px 0px" }}
-							accept={".xlsx"}
-							onChange={this.handleChange}
-						/>
-					</Col>
-				</Row>
+				<Spin spinning={this.state.loading}>
+					<Title level={5} style={{ textAlign: "center", marginBottom: 10 }}>
+						Thêm mới câu hỏi
+					</Title>
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<Select
+								value={this.state.questionSetOption}
+								style={{ width: "100%" }}
+								placeholder={"Chọn đề thi"}
+								onChange={this.onChangeQuestionSetOption}
+							>
+								{map(this.state.listQuestionSet, (item) => {
+									return (
+										<Option key={item.id} value={item.id}>
+											{get(item, "description")}
+										</Option>
+									);
+								})}
+							</Select>
+						</Col>
+					</Row>
+					<br />
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<Text style={{ marginRight: 10 }}>Tạo đề mới</Text>
+							<Switch
+								checked={this.state.checkCreate}
+								onChange={(checked) => {
+									if (checked === false) {
+										this.setState({
+											checkCreate: checked,
+											nameExam: "",
+											questionSetOption: null,
+											level: null,
+										});
+									} else {
+										this.setState({
+											checkCreate: checked,
+											questionSetOption: null,
+											level: null,
+										});
+									}
+								}}
+							/>
+							<Input
+								disabled={!this.state.checkCreate}
+								placeholder={"Tên đề thi"}
+								value={this.state.nameExam}
+								style={{ width: "100%", height: 36, marginTop: 10 }}
+								onChange={(ev) => this.setState({ nameExam: ev.target.value })}
+							/>
+							<Select
+								disabled={!this.state.checkCreate}
+								value={this.state.level}
+								style={{ width: "100%", marginTop: 10 }}
+								placeholder={"Chọn mức độ"}
+								onChange={this.onChangeLevelOption}
+							>
+								{map(optionsLevel, (item) => {
+									return (
+										<Option key={item.value} value={item.value}>
+											{item.label}
+										</Option>
+									);
+								})}
+							</Select>
+						</Col>
+					</Row>
+					<br />
+					<Row gutter={[10, 10]}>
+						<Col span={24}>
+							<Button onClick={this.onDowloadTempalte}>Tải về mẫu</Button>
+							<br />
+							<input
+								id="inputFileExcel"
+								type={"file"}
+								style={{ margin: "10px 0px" }}
+								accept={".xlsx"}
+								onChange={this.handleChange}
+							/>
+						</Col>
+					</Row>
+				</Spin>
 			</Modal>
 		);
 	}
